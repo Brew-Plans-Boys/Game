@@ -37,13 +37,12 @@ visited = {}
 #         node = "http://localhost:5000"
 
 
-baseUrl = 'https://lambda-treasure-hunt.herokuapp.com/api/adv/init/'
+baseUrl = 'https://lambda-treasure-hunt.herokuapp.com'
 auth = {"Authorization": "Token 2330ee34073008c724a7066470b88940e7278f5c"}
 
 def init():
     initUrl  = '/api/adv/init/'
-    # data = requests.get(baseUrl + initUrl.join(''), headers=auth)
-    data = requests.get(baseUrl, headers=auth)
+    data = requests.get(baseUrl + initUrl, headers=auth)
 
     if data != None:
         return data.text, 200
