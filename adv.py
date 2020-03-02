@@ -1,4 +1,3 @@
-from flask import Flask, jsonify, request
 import requests
 import json
 import sys
@@ -51,6 +50,18 @@ def init():
             'Error': 'No data returned.'
         })
 
+def checkStatus():
+    CHECKSTATUS_URL  = '/api/adv/status/'
+    data = requests.post(baseUrl + CHECKSTATUS_URL, headers=auth)
+
+    if data != None:
+        return data.text, 200
+    else:
+        return ({
+            'Error': 'No data returned.'
+        })
+
+
 def move():
     MOVEMENT_URL  = '/api/adv/move/'
     direction = input("Cardinal Direction(N, E, S, W): ").strip()
@@ -64,7 +75,10 @@ def move():
             'Error': 'No data returned.'
         })
 
-print(move())
+
+print(checkStatus())
+# print(move())
+# print(init())
 
 # r = requests.get(url=node + "/api/adv/init/", json=get_data)
 
