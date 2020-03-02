@@ -27,39 +27,37 @@ class Stack():
 visited = {}
 
 
-app = Flask(__name__)
+# app = Flask(__name__)
 
 
-if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        node = sys.argv[1]
-    else:
-        node = "http://localhost:5000"
+# if __name__ == '__main__':
+#     if len(sys.argv) > 1:
+#         node = sys.argv[1]
+#     else:
+#         node = "http://localhost:5000"
 
 
-@app.route('/api/adv/init/', methods=['GET'])
+baseUrl = 'https://lambda-treasure-hunt.herokuapp.com/api/adv/init/'
+auth = {"Authorization": "Token 2330ee34073008c724a7066470b88940e7278f5c"}
+
 def init():
-    data = request.get_json()
+    initUrl  = '/api/adv/init/'
+    # data = requests.get(baseUrl + initUrl.join(''), headers=auth)
+    data = requests.get(baseUrl, headers=auth)
 
     if data != None:
-        return jsonify(data), 200
+        return data.text, 200
     else:
-        return jsonify({
+        return ({
             'Error': 'No data returned.'
         })
-    # response = {
-    #     "message": "success"
-    # }
-    # return jsonify(data), 200
 
+print(init())
 
-get_data = {"Authorization": "Token 2330ee34073008c724a7066470b88940e7278f5c"}
+# r = requests.get(url=node + "/api/adv/init/", json=get_data)
 
+# print(r.json())
 
-r = requests.get(url=node + "/api/adv/init/", json=get_data)
+# # data = json.dumps(r)
 
-print(r.json())
-
-# data = json.dumps(r)
-
-# print(data)
+# # print(data)
