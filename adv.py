@@ -41,8 +41,8 @@ baseUrl = 'https://lambda-treasure-hunt.herokuapp.com'
 auth = {"Authorization": "Token 2330ee34073008c724a7066470b88940e7278f5c"}
 
 def init():
-    initUrl  = '/api/adv/init/'
-    data = requests.get(baseUrl + initUrl, headers=auth)
+    INITIALIZE_URL  = '/api/adv/init/'
+    data = requests.get(baseUrl + INITIALIZE_URL, headers=auth)
 
     if data != None:
         return data.text, 200
@@ -51,7 +51,20 @@ def init():
             'Error': 'No data returned.'
         })
 
-print(init())
+def move():
+    MOVEMENT_URL  = '/api/adv/move/'
+    direction = input("Cardinal Direction(N, E, S, W): ").strip()
+    directionData = {'direction': direction}
+    data = requests.post(baseUrl + MOVEMENT_URL, headers=auth, json=directionData)
+
+    if data != None:
+        return data.text, 200
+    else:
+        return ({
+            'Error': 'No data returned.'
+        })
+
+print(move())
 
 # r = requests.get(url=node + "/api/adv/init/", json=get_data)
 
