@@ -152,31 +152,43 @@ visited = {}
 opposites = {"n": "s", "s": "n", "e": "w", "w": "e"}
 backtrack_directions = []
 
+# Create a stack and push current data onto the stack
 stack = Stack()
 current_data = init()
 stack.push(current_data)
 
+# While there are items in the stack...
 while stack.size() > 0:
     all_exits_explored = True
     current_data = stack.pop()
     room_id = current_data[0].get('room_id')
     room_exits = current_data[0].get('exits')
 
+    # If room is not in visited dictionary, add it
     if room_id not in visited:
         visited[room_id] = {"n": "?", "s": "?", "e": "?", "w": "?"}
 
+    # For each exit of current room, check if the exit has been explored
     for d in room_exits:
+        # If direction has not been explored, move that direction and set all_exits_explore = False
         if visited[d] == "?":
             all_exits_explored = False
             new_data = move(d)
+            # Push opposite direction to backtrack_directions list
             backtrack_directions.push(opposites[d])
+            # Get new room id and add it to the direction value of the current room in visited
             new_room_id = new_data[0].get('room_id')
             visited[room_id][d] = new_room_id
 
+            # If new room is not in visited, add it
             if new_room_id not in visited:
                 visited[new_room_id] = {"n": "?", "s": "?", "e": "?", "w": "?"}
+                # Add the last room's id to the current room's values in visited
                 visited[new_room_id][opposites[d]] = room_id
+            # Push new room onto the stack
             stack.push(new_data)
+
+    # If all exits have been explored for the current room, backtrack and add room onto the stack
     if all_exits_explored == True:
         new_data = move(backtrack_directions.pop())
         stack.push(new_data)
