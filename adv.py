@@ -88,10 +88,10 @@ def carry():
         })
 
 def tresurePickup():
-    CARRY_URL  = '/api/adv/take/'
+    TRESUREPICKUP_URL  = '/api/adv/take/'
     pikcup = input("Type of the name of the tresure you want to pick up or drop: ").strip()
     pikcupData = {'name': pikcup}
-    data = requests.post(baseUrl + CARRY_URL, headers=auth, json=pikcupData).json()
+    data = requests.post(baseUrl + TRESUREPICKUP_URL, headers=auth, json=pikcupData).json()
 
     if data != None:
         return data, 200
@@ -100,6 +100,19 @@ def tresurePickup():
             'Error': 'No data returned.'
         })
 
+def tresureSell():
+    SELL_URL  = '/api/adv/sell/'
+    sell = input("Type of the name of the tresure you want to sell: ").strip()
+    sellData = {'name': sell}
+    data = requests.post(baseUrl + SELL_URL, headers=auth, json=sellData).json()
+
+    if sell is True:
+         sellConfirm = input("Are you sure you want to sell this?(Yes/No): ").strip()
+         if sellConfirm == 'yes':
+             data = requests.post(baseUrl + SELL_URL, headers=auth, json=sellConfirm).json()
+         else:
+             return "Item not sold" 
+    return data
 
 def changeName():
     NAMECHANGE_URL  = '/api/adv/change_name/'
@@ -114,7 +127,8 @@ def changeName():
             'Error': 'No data returned.'
         })
 
-
+# print(tresureSell())
+# print(tresurePickup())
 # print(carry())
 # print(changeName())
 # print(checkStatus())
