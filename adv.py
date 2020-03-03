@@ -87,6 +87,20 @@ def carry():
             'Error': 'No data returned.'
         })
 
+def tresurePickup():
+    CARRY_URL  = '/api/adv/take/'
+    pikcup = input("Type of the name of the tresure you want to pick up or drop: ").strip()
+    pikcupData = {'name': pikcup}
+    data = requests.post(baseUrl + CARRY_URL, headers=auth, json=pikcupData).json()
+
+    if data != None:
+        return data, 200
+    else:
+        return ({
+            'Error': 'No data returned.'
+        })
+
+
 def changeName():
     NAMECHANGE_URL  = '/api/adv/change_name/'
     newName = input("Type your new name: ").strip()
@@ -103,7 +117,7 @@ def changeName():
 
 # print(carry())
 # print(changeName())
-print(checkStatus())
+# print(checkStatus())
 # print(move())
 # print(init())
 
