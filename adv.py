@@ -58,8 +58,6 @@ get_data = {"Authorization": "Token 2330ee34073008c724a7066470b88940e7278f5c"}
 
 r = requests.get(url=node + "/api/adv/init/", json=get_data)
 
-print(r.json())
+data = r.json()
 
-# data = json.dumps(r)
-
-# print(data)
+print(data)
