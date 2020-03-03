@@ -22,10 +22,6 @@ class Stack():
     def size(self):
         return len(self.stack)
 
-
-visited = {}
-
-
 # app = Flask(__name__)
 
 
@@ -45,7 +41,7 @@ def init():
     data = requests.get(baseUrl + INITIALIZE_URL, headers=auth)
 
     if data != None:
-        return data.text, 200
+        return data.json(), 200
     else:
         return ({
             'Error': 'No data returned.'
@@ -64,9 +60,9 @@ def checkStatus():
         })
 
 
-def move():
+def move(direction):
     MOVEMENT_URL = '/api/adv/move/'
-    direction = input("Cardinal Direction(N, E, S, W): ").strip()
+    # direction = input("Cardinal Direction(N, E, S, W): ").strip()
     directionData = {'direction': direction}
     data = requests.post(baseUrl + MOVEMENT_URL,
                          headers=auth, json=directionData).json()
@@ -143,6 +139,7 @@ def changeName():
             'Error': 'No data returned.'
         })
 
+
 # print(tresureSell())
 # print(tresurePickup())
 # print(carry())
@@ -150,6 +147,44 @@ def changeName():
 # print(checkStatus())
 # print(move())
 # print(init())
+
+visited = {}
+opposites = {"n": "s", "s": "n", "e": "w", "w": "e"}
+backtrack_directions = []
+
+stack = Stack()
+current_data = init()
+stack.push(current_data)
+
+while stack.size() > 0:
+    all_exits_explored = True
+    current_data = stack.pop()
+    room_id = current_data[0].get('room_id')
+    room_exits = current_data[0].get('exits')
+
+    if room_id not in visited:
+        visited[room_id] = {"n": "?", "s": "?", "e": "?", "w": "?"}
+
+    for d in room_exits:
+        if visited[d] == "?":
+            all_exits_explored = False
+            new_data = move(d)
+            backtrack_directions.push(opposites[d])
+            new_room_id = new_data[0].get('room_id')
+            visited[room_id][d] = new_room_id
+
+            if new_room_id not in visited:
+                visited[new_room_id] = {"n": "?", "s": "?", "e": "?", "w": "?"}
+                visited[new_room_id][opposites[d]] = room_id
+            stack.push(new_data)
+    if all_exits_explored == True:
+        new_data = move(backtrack_directions.pop())
+        stack.push(new_data)
+
+
+# print(room_id)
+# print(room_exits)
+
 
 # r = requests.get(url=node + "/api/adv/init/", json=get_data)
 
