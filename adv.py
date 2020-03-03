@@ -52,30 +52,57 @@ def init():
 
 def checkStatus():
     CHECKSTATUS_URL  = '/api/adv/status/'
-    data = requests.post(baseUrl + CHECKSTATUS_URL, headers=auth)
+    data = requests.post(baseUrl + CHECKSTATUS_URL, headers=auth).json()
 
     if data != None:
-        return data.text, 200
+        return data, 200
     else:
         return ({
             'Error': 'No data returned.'
         })
-
 
 def move():
     MOVEMENT_URL  = '/api/adv/move/'
     direction = input("Cardinal Direction(N, E, S, W): ").strip()
     directionData = {'direction': direction}
-    data = requests.post(baseUrl + MOVEMENT_URL, headers=auth, json=directionData)
+    data = requests.post(baseUrl + MOVEMENT_URL, headers=auth, json=directionData).json()
 
     if data != None:
-        return data.text, 200
+        return data, 200
+    else:
+        return ({
+            'Error': 'No data returned.'
+        })
+
+def carry():
+    CARRY_URL  = '/api/adv/carry/'
+    carry = input("Type of the name of what you want to drop or carry: ").strip()
+    carryData = {'name': carry}
+    data = requests.post(baseUrl + CARRY_URL, headers=auth, json=carryData).json()
+
+    if data != None:
+        return data, 200
+    else:
+        return ({
+            'Error': 'No data returned.'
+        })
+
+def changeName():
+    NAMECHANGE_URL  = '/api/adv/change_name/'
+    newName = input("Type your new name: ").strip()
+    nameData = {'name': newName}
+    data = requests.post(baseUrl + NAMECHANGE_URL, headers=auth, json=nameData).json()
+
+    if data != None:
+        return data, 200
     else:
         return ({
             'Error': 'No data returned.'
         })
 
 
+# print(carry())
+# print(changeName())
 print(checkStatus())
 # print(move())
 # print(init())
