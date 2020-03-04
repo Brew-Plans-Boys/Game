@@ -165,7 +165,18 @@ def warpThing():
         return ({
             'Error': 'No data returned.'
         })
-        
+
+def lambdaUWU():
+    SHRINE_URL = '/api/adv/pray/'
+    data = requests.post(baseUrl + SHRINE_URL,
+                         headers=auth).json()
+    if data != None:
+        return data, 200
+    else:
+        return ({
+            'Error': 'No data returned.'
+        })
+
 # print(warpThing())
 # print(mineCoin())
 # print(getPrevHash())
