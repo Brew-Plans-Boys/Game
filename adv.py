@@ -36,10 +36,13 @@ class Stack():
 #     else:
 #         node = "http://localhost:5000"
 baseUrl = 'https://lambda-treasure-hunt.herokuapp.com'
+jeff_auth = {
+    "Authorization": "Token b1434eb529ef8326059dabcec315ca92abe7eced"
+}
 colin_auth = {
     "Authorization": "Token 2330ee34073008c724a7066470b88940e7278f5c"}
 # eli_auth
-auth = {"Authorization": "Token a39b9cc5b11d49d162694cfee69a4710093b2106"}
+auth = {"Authorization": "Token b1434eb529ef8326059dabcec315ca92abe7eced"}
 def init():
     INITIALIZE_URL = '/api/adv/init/'
     data = requests.get(baseUrl + INITIALIZE_URL, headers=auth)
@@ -126,6 +129,19 @@ def changeName():
         return ({
             'Error': 'No data returned.'
         })
+
+def getPrevHash():
+    GETPREVHASH_URL = '/api/bc/last_proof/'
+    data = requests.get(baseUrl + GETPREVHASH_URL,
+                         headers=auth).json()
+    if data != None:
+        return data, 200
+    else:
+        return ({
+            'Error': 'No data returned.'
+        })
+
+print(getPrevHash())
 # print(tresureSell())
 # print(tresurePickup())
 # print(carry())
