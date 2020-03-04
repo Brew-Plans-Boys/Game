@@ -63,9 +63,10 @@ def checkStatus():
         return ({
             'Error': 'No data returned.'
         })
+        
 def move(direction):
     MOVEMENT_URL = '/api/adv/move/'
-    # direction = input("Cardinal Direction(N, E, S, W): ").strip()
+    direction = input("Cardinal Direction(N, E, S, W): ").strip()
     directionData = {'direction': direction}
     data = requests.post(baseUrl + MOVEMENT_URL,
                          headers=auth, json=directionData).json()
@@ -153,7 +154,20 @@ def mineCoin():
         return ({
             'Error': 'No data returned.'
         })
-print(mineCoin())
+
+def warpThing():
+    WARP_URL = '/api/adv/recall/'
+    data = requests.post(baseUrl + WARP_URL,
+                         headers=auth).json()
+    if data != None:
+        return data, 200
+    else:
+        return ({
+            'Error': 'No data returned.'
+        })
+        
+# print(warpThing())
+# print(mineCoin())
 # print(getPrevHash())
 # print(tresureSell())
 # print(tresurePickup())
@@ -162,6 +176,7 @@ print(mineCoin())
 # print(checkStatus())
 # print(move())
 # print(init())
+
 visited = {}
 opposites = {"n": "s", "s": "n", "e": "w", "w": "e"}
 backtrack_directions = []
