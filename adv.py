@@ -7,12 +7,12 @@ import world
 from ast import literal_eval
 #Load World
 
-world = World()
+# world = World()
 
-room_graph = literal_eval(open(room_graph, "r").read())
-world.load_graph(room_graph)
+# room_graph = literal_eval(open(room_graph, "r").read())
+# world.load_graph(room_graph)
 
-world.print_rooms()
+# world.print_rooms()
 
 
 INITIALIZE_URL = "https://lambda-treasure-hunt.herokuapp.com/api/adv/init/"
@@ -141,7 +141,20 @@ def getPrevHash():
             'Error': 'No data returned.'
         })
 
-print(getPrevHash())
+def mineCoin():
+    MINECOIN_URL = '/api/bc/mine/'
+    new_proof = '0000005051098'
+    mineCoinData = {'proof': new_proof}
+    data = requests.post(baseUrl + MINECOIN_URL,
+                         headers=auth, json=mineCoinData).json()
+    if data != None:
+        return data, 200
+    else:
+        return ({
+            'Error': 'No data returned.'
+        })
+print(mineCoin())
+# print(getPrevHash())
 # print(tresureSell())
 # print(tresurePickup())
 # print(carry())
