@@ -106,13 +106,13 @@ def carry():
         })
 
 
-def tresurePickup():
-    TRESUREPICKUP_URL = '/api/adv/take/'
-    pikcup = input(
-        "Type of the name of the tresure you want to pick up or drop: ").strip()
-    pikcupData = {'name': pikcup}
-    data = requests.post(baseUrl + TRESUREPICKUP_URL,
-                         headers=auth, json=pikcupData).json()
+def treasurePickup(item_name):
+    TREASUREPICKUP_URL = '/api/adv/take/'
+    # pikcup = input(
+    #     "Type of the name of the tresure you want to pick up or drop: ").strip()
+    pickupData = {'name': item_name}
+    data = requests.post(baseUrl + TREASUREPICKUP_URL,
+                         headers=auth, json=pickupData).json()
     if data != None:
         return data, 200
     else:
@@ -121,20 +121,20 @@ def tresurePickup():
         })
 
 
-def tresureSell():
+def tresureSell(item_name):
     SELL_URL = '/api/adv/sell/'
-    sell = input("Type of the name of the tresure you want to sell: ").strip()
-    sellData = {'name': sell}
+    # sell = input("Type of the name of the tresure you want to sell: ").strip()
+    sellData = {'name': item_name}
     data = requests.post(baseUrl + SELL_URL, headers=auth,
                          json=sellData).json()
-    if sell is True:
-        sellConfirm = input(
-            "Are you sure you want to sell this?(Yes/No): ").strip()
-        if sellConfirm == 'yes':
-            data = requests.post(baseUrl + SELL_URL,
-                                 headers=auth, json=sellConfirm).json()
-        else:
-            return "Item not sold"
+    # if sell is True:
+    # sellConfirm = input(
+    #         "Are you sure you want to sell this?(Yes/No): ").strip()
+    # if sellConfirm == 'yes':
+    sellConfirm = {'name': item_name, 'confirm': 'yes'}
+    data = requests.post(baseUrl + SELL_URL, headers=auth,
+                         json=sellConfirm).json()
+    time.sleep(data['cooldown'])
     return data
 
 
@@ -201,6 +201,18 @@ while stack.size() > 0:
             backtrack_directions.append(opposites[d])
             # Get new room id and add it to the direction value of the current room in visited
             new_room_id = new_data[0].get('room_id')
+            status = checkStatus()
+            print('STATUS', status)
+            if new_data[0]['title'] == 'Shop':
+                connected_rooms.write(f"Shop: {new_room_id}\n")
+                for item in status[0]['inventory']:
+                    tresureSell(item)
+
+            if len(new_data[0]['items']) != 0 and status[0]['encumbrance'] < status[0]['strength']:
+                for item in new_data[0]['items']:
+                    treasure_pickup = treasurePickup(item)
+                    print(treasure_pickup)
+
             print('new_room_id', new_room_id)
             visited[room_id][d] = new_room_id
 
