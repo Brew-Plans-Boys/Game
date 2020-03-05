@@ -177,8 +177,6 @@ def wiseExplorer(direction, next_room_id):
         return ({
             'Error': 'No data returned.'
         })
-
-
 # print(tresureSell())
 # print(tresurePickup())
 # print(carry())
@@ -186,12 +184,14 @@ def wiseExplorer(direction, next_room_id):
 # print(checkStatus())
 # print(move())
 # print(init())
-visited = {}
-opposites = {"n": "s", "s": "n", "e": "w", "w": "e"}
-backtrack_directions = []
 
 
 connected_rooms = open('connected_rooms.txt', 'r+')
+visited = {}
+
+
+opposites = {"n": "s", "s": "n", "e": "w", "w": "e"}
+backtrack_directions = []
 
 
 for line in connected_rooms:
@@ -218,10 +218,6 @@ while stack.size() > 0:
     print(status)
     if room_id not in visited:
         visited[room_id] = {"n": "?", "s": "?", "e": "?", "w": "?"}
-    if room_id == 467:
-        connected_rooms.write(
-            f"{backtrack_directions}\n")
-        sys.exit()
     # if 'Shrine' in current_data[0]['title']:
     #     lambdaShrineUWU()
 
