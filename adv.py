@@ -152,6 +152,33 @@ def changeName():
         })
 
 
+def lambdaShrineUWU():
+    SHRINE_URL = '/api/adv/pray/'
+    data = requests.post(baseUrl + SHRINE_URL,
+                         headers=auth).json()
+    if data != None:
+        return data, 200
+    else:
+        return ({
+            'Error': 'No data returned.'
+        })
+
+
+def wiseExplorer(direction, next_room_id):
+    MOVEMENT_URL = '/api/adv/move/'
+    # direction = input("Cardinal Direction(N, E, S, W): ").strip()
+    directionData = {'direction': direction, 'next_room_id': f"{next_room_id}"}
+    data = requests.post(baseUrl + MOVEMENT_URL,
+                         headers=auth, json=directionData).json()
+    time.sleep(data['cooldown'])
+    if data != None:
+        return data, 200
+    else:
+        return ({
+            'Error': 'No data returned.'
+        })
+
+
 # print(tresureSell())
 # print(tresurePickup())
 # print(carry())
@@ -162,6 +189,7 @@ def changeName():
 visited = {}
 opposites = {"n": "s", "s": "n", "e": "w", "w": "e"}
 backtrack_directions = []
+
 
 connected_rooms = open('connected_rooms.txt', 'r+')
 
@@ -186,8 +214,21 @@ while stack.size() > 0:
     room_exits = current_data[0].get('exits')
     print('exits', room_exits)
     # If room is not in visited dictionary, add it
+    status = checkStatus()
+    print(status)
     if room_id not in visited:
         visited[room_id] = {"n": "?", "s": "?", "e": "?", "w": "?"}
+    if room_id == 467:
+        connected_rooms.write(
+            f"{backtrack_directions}\n")
+        sys.exit()
+    # if 'Shrine' in current_data[0]['title']:
+    #     lambdaShrineUWU()
+
+    # if current_data[0]['items'] and len(current_data[0]['items']) != 0 and status[0]['encumbrance'] < status[0]['strength']:
+    #     for item in current_data[0]['items']:
+    #         treasure_pickup = treasurePickup(item)
+    #         print(treasure_pickup)
 
     for d in room_exits:
         # If direction has not been explored, move that direction and set all_exits_explored = False
@@ -201,17 +242,6 @@ while stack.size() > 0:
             backtrack_directions.append(opposites[d])
             # Get new room id and add it to the direction value of the current room in visited
             new_room_id = new_data[0].get('room_id')
-            status = checkStatus()
-            print('STATUS', status)
-            if new_data[0]['title'] == 'Shop':
-                connected_rooms.write(f"Shop: {new_room_id}\n")
-                for item in status[0]['inventory']:
-                    tresureSell(item)
-
-            if len(new_data[0]['items']) != 0 and status[0]['encumbrance'] < status[0]['strength']:
-                for item in new_data[0]['items']:
-                    treasure_pickup = treasurePickup(item)
-                    print(treasure_pickup)
 
             print('new_room_id', new_room_id)
             visited[room_id][d] = new_room_id
@@ -231,7 +261,8 @@ while stack.size() > 0:
     if all_exits_explored == True:
         connected_rooms.write(
             f"{room_id}: {visited[room_id]}\n")
-        new_data = move(backtrack_directions.pop())
+        back_direction = backtrack_directions.pop()
+        new_data = move(back_direction)
 
         stack.push(new_data)
 connected_rooms.close()
