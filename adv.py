@@ -45,15 +45,17 @@ class Stack():
 #     else:
 #         node = "http://localhost:5000"
 baseUrl = 'https://lambda-treasure-hunt.herokuapp.com'
-auth = {
+colin_auth = {
     "Authorization": "Token 2330ee34073008c724a7066470b88940e7278f5c"}
 # eli_auth
-eli_auth = {"Authorization": "Token a39b9cc5b11d49d162694cfee69a4710093b2106"}
+auth = {"Authorization": "Token a39b9cc5b11d49d162694cfee69a4710093b2106"}
 
 
 def init():
     INITIALIZE_URL = '/api/adv/init/'
     data = requests.get(baseUrl + INITIALIZE_URL, headers=auth)
+    # with open('mapfiles/rooms.txt', 'w') as f:
+    #     f.write(json(data) + '\n')
     if data != None:
         print("DATA: ", data.json())
         time.sleep(data.json()['cooldown'])
@@ -80,8 +82,9 @@ def move(direction):
     MOVEMENT_URL = '/api/adv/move/'
     # direction = input("Cardinal Direction(N, E, S, W): ").strip()
     directionData = {'direction': direction}
-    data = requests.post(baseUrl + MOVEMENT_URL,
-                         headers=auth, json=directionData).json()
+    data = requests.post(baseUrl + MOVEMENT_URL, headers=auth, json=directionData).json()
+    with open('mapfiles/rooms.txt', 'a') as f:
+        f.write(json.dumps(data) + "\n")
     time.sleep(data['cooldown'])
     if data != None:
         return data, 200
@@ -96,8 +99,7 @@ def carry():
     carry = input(
         "Type of the name of what you want to drop or carry: ").strip()
     carryData = {'name': carry}
-    data = requests.post(baseUrl + CARRY_URL,
-                         headers=auth, json=carryData).json()
+    data = requests.post(baseUrl + CARRY_URL,headers=auth, json=carryData).json()
     if data != None:
         return data, 200
     else:
@@ -111,8 +113,7 @@ def treasurePickup(item_name):
     # pikcup = input(
     #     "Type of the name of the tresure you want to pick up or drop: ").strip()
     pickupData = {'name': item_name}
-    data = requests.post(baseUrl + TREASUREPICKUP_URL,
-                         headers=auth, json=pickupData).json()
+    data = requests.post(baseUrl + TREASUREPICKUP_URL, headers=auth, json=pickupData).json()
     if data != None:
         return data, 200
     else:
@@ -125,15 +126,13 @@ def tresureSell(item_name):
     SELL_URL = '/api/adv/sell/'
     # sell = input("Type of the name of the tresure you want to sell: ").strip()
     sellData = {'name': item_name}
-    data = requests.post(baseUrl + SELL_URL, headers=auth,
-                         json=sellData).json()
+    data = requests.post(baseUrl + SELL_URL, headers=auth, json=sellData).json()
     # if sell is True:
     # sellConfirm = input(
     #         "Are you sure you want to sell this?(Yes/No): ").strip()
     # if sellConfirm == 'yes':
     sellConfirm = {'name': item_name, 'confirm': 'yes'}
-    data = requests.post(baseUrl + SELL_URL, headers=auth,
-                         json=sellConfirm).json()
+    data = requests.post(baseUrl + SELL_URL, headers=auth, json=sellConfirm).json()
     time.sleep(data['cooldown'])
     return data
 
@@ -142,8 +141,7 @@ def changeName():
     NAMECHANGE_URL = '/api/adv/change_name/'
     newName = input("Type your new name: ").strip()
     nameData = {'name': newName}
-    data = requests.post(baseUrl + NAMECHANGE_URL,
-                         headers=auth, json=nameData).json()
+    data = requests.post(baseUrl + NAMECHANGE_URL, headers=auth, json=nameData).json()
     if data != None:
         return data, 200
     else:
@@ -203,15 +201,15 @@ while stack.size() > 0:
             new_room_id = new_data[0].get('room_id')
             status = checkStatus()
             print('STATUS', status)
-            if new_data[0]['title'] == 'Shop':
-                connected_rooms.write(f"Shop: {new_room_id}\n")
-                for item in status[0]['inventory']:
-                    tresureSell(item)
+            # if new_data[0]['title'] == 'Shop':
+            #     connected_rooms.write(f"Shop: {new_room_id}\n")
+            #     for item in status[0]['inventory']:
+            #         tresureSell(item)
 
-            if len(new_data[0]['items']) != 0 and status[0]['encumbrance'] < status[0]['strength']:
-                for item in new_data[0]['items']:
-                    treasure_pickup = treasurePickup(item)
-                    print(treasure_pickup)
+            # if len(new_data[0]['items']) != 0 and status[0]['encumbrance'] < status[0]['strength']:
+            #     for item in new_data[0]['items']:
+            #         treasure_pickup = treasurePickup(item)
+            #         print(treasure_pickup)
 
             print('new_room_id', new_room_id)
             visited[room_id][d] = new_room_id
