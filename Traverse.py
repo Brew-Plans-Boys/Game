@@ -1,0 +1,2 @@
+def traverse(destination):
+    
