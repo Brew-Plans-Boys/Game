@@ -1,0 +1,2 @@
+{"cooldown": 19.798955, "errors": ["Cooldown Violation: +5s CD"]}
+{"cooldown": 19.205323, "errors": ["Cooldown Violation: +5s CD"]}

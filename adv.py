@@ -6,6 +6,7 @@ import time
 
 import world
 import ast
+from ast import literal_eval
 # Load World
 
 
@@ -80,8 +81,13 @@ def move(direction):
     MOVEMENT_URL = '/api/adv/move/'
     # direction = input("Cardinal Direction(N, E, S, W): ").strip()
     directionData = {'direction': direction}
-    data = requests.post(baseUrl + MOVEMENT_URL,
-                         headers=auth, json=directionData).json()
+    data = requests.post(baseUrl + MOVEMENT_URL, headers=auth, json=directionData).json()
+    raw_data = requests.post(baseUrl + MOVEMENT_URL, headers=auth, json=directionData)
+
+
+    with open('mapfiles/rooms_weds.txt', 'a') as f:
+        f.write(json.dumps(raw_data.json()) + '\n')
+
     time.sleep(data['cooldown'])
     if data != None:
         return data, 200
@@ -177,7 +183,7 @@ current_data = init()
 stack.push(current_data)
 # While there are items in the stack...
 while stack.size() > 0:
-    #print(f"Visited: {visited}, Backtrack_Directions: {backtrack_directions}")
+    print(f"Visited: {visited}, Backtrack_Directions: {backtrack_directions}")
 
     all_exits_explored = True
     current_data = stack.pop()
