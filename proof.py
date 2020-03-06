@@ -216,17 +216,17 @@ def mine(hashed_str):
 
 checkStatus()
 
-proof_of_work = random.randint(-84756574, 84756574)
-last_proof = getLastProof()[0]
-last_proof_num = last_proof['proof']
-last_proof_difficulty = last_proof['difficulty']
-hash_str = hashlib.sha256(
-    f"{last_proof_num}{proof_of_work}".encode()).hexdigest()
-dif = ''
-while hash_str[:last_proof_difficulty] != dif.zfill(last_proof_difficulty):
-    proof_of_work -= 1
-    print(hash_str)
-    print(hash_str[:last_proof_difficulty])
-    hash_str = hashlib.sha256(
-        f"{last_proof_num}{proof_of_work}".encode()).hexdigest()
-mine(hash_str)
+# proof_of_work = (-84756574)
+# last_proof = getLastProof()[0]
+# last_proof_num = last_proof['proof']
+# last_proof_difficulty = last_proof['difficulty']
+# hash_str = hashlib.sha256(
+#     f"{last_proof_num}{proof_of_work}".encode()).hexdigest()
+# dif = ''
+# while hash_str[:last_proof_difficulty] != dif.zfill(last_proof_difficulty):
+#     proof_of_work += 1
+#     print(hash_str)
+#     print(hash_str[:last_proof_difficulty])
+#     hash_str = hashlib.sha256(
+#         f"{last_proof_num}{proof_of_work}".encode()).hexdigest()
+# mine(proof_of_work)
