@@ -1,3 +1,11 @@
+{
+    "proof": 2038104958,
+    "difficulty": 6,
+    "cooldown": 1.0,
+    "messages": [],
+    "errors": []
+}
+import hashlib
 import requests
 import json
 import sys
@@ -183,97 +191,38 @@ def wiseExplorer(direction, next_room_id):
         })
 
 
-# print(tresureSell())
-# print(tresurePickup())
-# print(carry())
-# print(changeName())
-# print(checkStatus())
-# print(move())
-# print(init())
-# visited = {}
-# opposites = {"n": "s", "s": "n", "e": "w", "w": "e"}
-# backtrack_directions = []
+def getLastProof():
+    LAST_PROOF_URL = '/api/bc/last_proof'
+    data = requests.get(baseUrl + LAST_PROOF_URL, headers=auth).json()
+    if data != None:
+        return data, 200
+    else:
+        return ({
+            'Error': 'No data returned.'
+        })
+def mine(hashed_str):
+    MINE_URL = '/api/bc/mine'
+    postData = {"proof": hashed_str}
+    data = requests.post(baseUrl + MINE_URL, headers=auth,
+                         json=postData).json()
+    if data != None:
+        return data, 200
+    else:
+        return ({
+            'Error': 'No data returned.'
+        })
 
-
-# connected_rooms = open('connected_rooms.txt', 'r+')
-
-
-# for line in connected_rooms:
-#     room_info = line.split(':', 1)
-#     visited[int(room_info[0])] = ast.literal_eval(room_info[1].strip())
-
-# # Create a stack and push current data onto the stack
-# stack = Stack()
-# current_data = init()
-
-# stack.push(current_data)
-# # While there are items in the stack...
-# while stack.size() > 0:
-#     print(f"Visited: {visited}, Backtrack_Directions: {backtrack_directions}")
-
-#     all_exits_explored = True
-#     current_data = stack.pop()
-#     print('CURRENT DATA', current_data)
-#     room_id = current_data[0].get('room_id')
-#     room_exits = current_data[0].get('exits')
-#     print('exits', room_exits)
-#     # If room is not in visited dictionary, add it
-#     status = checkStatus()
-#     print(status)
-#     if room_id not in visited:
-#         visited[room_id] = {"n": "?", "s": "?", "e": "?", "w": "?"}
-#     if room_id == 467:
-#         connected_rooms.write(
-#             f"{backtrack_directions}\n")
-#         sys.exit()
-#     # if 'Shrine' in current_data[0]['title']:
-#     #     lambdaShrineUWU()
-
-#     # if current_data[0]['items'] and len(current_data[0]['items']) != 0 and status[0]['encumbrance'] < status[0]['strength']:
-#     #     for item in current_data[0]['items']:
-#     #         treasure_pickup = treasurePickup(item)
-#     #         print(treasure_pickup)
-
-#     for d in room_exits:
-#         # If direction has not been explored, move that direction and set all_exits_explored = False
-#         if visited[room_id][d] != "?":
-#             continue
-#         else:
-#             all_exits_explored = False
-#             print("Direction", d)
-#             new_data = move(d)
-#             # Push opposite direction to backtrack_directions list
-#             backtrack_directions.append(opposites[d])
-#             # Get new room id and add it to the direction value of the current room in visited
-#             new_room_id = new_data[0].get('room_id')
-
-#             print('new_room_id', new_room_id)
-#             visited[room_id][d] = new_room_id
-
-#             # # If new room is not in visited, add it
-#             if new_room_id not in visited:
-#                 visited[new_room_id] = {
-#                     "n": "?", "s": "?", "e": "?", "w": "?"}
-#                 # Add the last room's id to the current room's values in visited
-#             visited[new_room_id][opposites[d]] = room_id
-#             print('visited', visited)
-
-#             # Push new room onto the stack
-#             stack.push(new_data)
-#             break
-#     # If all exits have been explored for the current room, backtrack and add room onto the stack
-#     if all_exits_explored == True:
-#         connected_rooms.write(
-#             f"{room_id}: {visited[room_id]}\n")
-#         back_direction = backtrack_directions.pop()
-#         new_data = move(back_direction)
-
-#         stack.push(new_data)
-# connected_rooms.close()
-
-# # print(room_id)
-# # print(room_exits)
-# # r = requests.get(url=node + "/api/adv/init/", json=get_data)
-# # print(r.json())
-# # # data = json.dumps(r)
-# # # print(data)
+proof_of_work = -239642396417927412479832479823759133235325235
+last_proof = getLastProof()[0]
+last_proof_num = last_proof['proof']
+last_proof_difficulty = last_proof['difficulty']
+hash_str = hashlib.sha256(
+    f"{last_proof_num}{proof_of_work}".encode()).hexdigest()
+dif = ''
+while hash_str[:last_proof_difficulty] != dif.zfill(last_proof_difficulty):
+    proof_of_work -= 1
+    print(hash_str)
+    print(hash_str[:last_proof_difficulty])
+    hash_str = hashlib.sha256(
+        f"{last_proof_num}{proof_of_work}".encode()).hexdigest()
+mine(hash_str)
