@@ -11,6 +11,7 @@ import json
 import sys
 import datetime
 import time
+import random
 
 import world
 import ast
@@ -80,6 +81,7 @@ def checkStatus():
     CHECKSTATUS_URL = '/api/adv/status/'
     data = requests.post(baseUrl + CHECKSTATUS_URL, headers=auth).json()
     if data != None:
+        print("Status: ", data)
         return data, 200
     else:
         return ({
@@ -203,8 +205,7 @@ def getLastProof():
 def mine(hashed_str):
     MINE_URL = '/api/bc/mine'
     postData = {"proof": hashed_str}
-    data = requests.post(baseUrl + MINE_URL, headers=auth,
-                         json=postData).json()
+    data = requests.post(baseUrl + MINE_URL, headers=auth,json=postData).json()
     if data != None:
         return data, 200
     else:
@@ -212,7 +213,10 @@ def mine(hashed_str):
             'Error': 'No data returned.'
         })
 
-proof_of_work = -239642396417927412479832479823759133235325235
+
+checkStatus()
+
+proof_of_work = random.randint(-84756574, 84756574)
 last_proof = getLastProof()[0]
 last_proof_num = last_proof['proof']
 last_proof_difficulty = last_proof['difficulty']
